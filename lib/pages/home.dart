@@ -14,8 +14,17 @@ class _HomeState extends State<Home> {
     data = data.isNotEmpty ? data: ModalRoute.of(context).settings.arguments;
     // print(data);
     //set Background
-    String bgImage = data['isDayTime'] ? 'day.png' : 'night.png';
-    Color bgColor = data['isDayTime'] ? Colors.blue : Colors.indigo[500];
+    String bgImage = data['isDayTime'] + '.jpg';// ? 'day.png' : 'night.png';
+    // Color bgColor = data['isDayTime'] ? Colors.blue : Colors.indigo[500];
+    Color bgColor;
+    if(data['isDayTime']=='dawn')
+      bgColor = Colors.orange;
+    else if(data['isDayTime']=='day')
+      bgColor = Colors.blue[500];
+    else if(data['isDayTime']=='evening')
+      bgColor = Colors.orange[700];
+    else
+      bgColor = Colors.indigo[800];
     // imageCache.clear();
     return Scaffold(
       backgroundColor: bgColor,
@@ -40,6 +49,8 @@ class _HomeState extends State<Home> {
                         'location': result['location'],
                         'isDayTime': result['isDayTime'],
                         'flag': result['flag'],
+                        'abbr': result['abbr'],
+                        'bgc': result['bgc'],
                       };
                     });
                     },
@@ -62,28 +73,50 @@ class _HomeState extends State<Home> {
                     Text(
                       data['location'],
                       style: TextStyle(
-                        fontSize: 28.0,
-                        letterSpacing: 2.0,
+                        fontSize: 20.0,
+                        // fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
                           color: Colors.white,
                       ),
                     ),
+                    SizedBox(width: 10.0),
                     Center(
                       child: CircleAvatar(
                         backgroundImage: AssetImage('assets/${data['flag']}'),
+                        radius: 15.0,
                       ),
                     ),
+//                  ClipOval(
+//                    child: Image.network(
+//                        'assets/${data['flag']}',
+//                        fit: BoxFit.cover,
+//                    ),
+                  // ),
                   ],
                 ),
 
                 SizedBox(height: 20.0),
-                Text(
-                  data['time'],
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    color: Colors.white,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                  Text(
+                    data['time'],
+                    style: TextStyle(
+                      fontSize: 25.0,
+                      color: Colors.white,
+                    ),
                   ),
+                  SizedBox(width: 5.0),
+                  Center(
+                    child: Text('(${data['abbr']})',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0,
+                    ),),
+                    ),
+                  ],
                 ),
-              ],
+                ],
             ),
           ),
         ),

@@ -7,7 +7,8 @@ class WorldTime {
   String time; // the time in that location
   String flag; // URL to an asset flag icon
   String url; // location URL for API endpoint
-  bool isDayTime; // true or false
+  String isDayTime; // true or false
+  String abbr = 'IST';
   WorldTime({this.location, this.flag, this.url});
 
   Future<void> getTime() async {
@@ -19,6 +20,7 @@ class WorldTime {
         print(data);
 
         // get properties from data
+        abbr = data['abbreviation'];
         String datetime = data['datetime'];
         String offset = data['utc_offset'].substring(0, 3);
         String offset2 = data['utc_offset'].substring(4, 6);
@@ -31,7 +33,15 @@ class WorldTime {
         now = now.add(Duration(hours: int.parse(offset), minutes: int.parse(offset2)));
 
         // set the time property
-        isDayTime = now.hour >= 6 && now.hour < 18 ? true: false;
+        if(now.hour >= 5 && now.hour <= 7)
+          isDayTime = 'dawn';
+        else if(now.hour > 7 && now.hour <= 17)
+          isDayTime = 'day';
+        else if(now.hour > 17 && now.hour <= 19)
+          isDayTime = 'evening';
+        else
+          isDayTime = 'night';
+        // isDayTime = now.hour >= 6 && now.hour < 18 ? true: false;
         time = DateFormat.jm().format(now);
     }
     catch(e) {
